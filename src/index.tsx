@@ -2,11 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { theme } from 'loft-taxi-mui-theme';
 import * as serviceWorker from './serviceWorker';
+import { StoreProvider } from './store/StoreProvider';
+import { BrowserRouter } from 'react-router-dom';
+import { MuiThemeProvider } from '@material-ui/core';
+import { configure } from 'mobx';
+
+import 'mobx-react/batchingForReactDom';
+
+configure({ enforceActions: 'always' });
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <MuiThemeProvider theme={theme}>
+      <BrowserRouter>
+        <StoreProvider>
+          <App />
+        </StoreProvider>
+      </BrowserRouter>
+    </MuiThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,25 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
+import * as React from 'react';
 import './App.css';
+import { Switch, Route, Redirect, RouteProps } from 'react-router-dom';
+import { Observer } from 'mobx-react';
+import { useStore } from './store/StoreProvider';
+import Login from './pages/Login';
+import Registration from './pages/Registration';
+import Map from './pages/Map/Map';
+import Profile from './pages/Profile';
+
+const PrivateRoute: React.FC<RouteProps> = (props) => {
+  const { path, component } = props;
+  const { isLoggedIn } = useStore();
+
+  return (
+    <Observer>
+      {
+        () => isLoggedIn ?
+          <Route path={path} component={component} /> :
+          <Redirect to='/login' />
+      }
+    </Observer>
+  );
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Switch>
+      <Route path='/login' component={Login} />
+      <Route path='/registration' component={Registration} />
+      <PrivateRoute path='/map' component={Map} />
+      <PrivateRoute path='/profile' component={Profile} />
+      <Route path='/'>
+        <PrivateRoute path='/map' component={Map} />
+      </Route>
+      <Route path='*'>
+        <h1>Page Not Found</h1>
+      </Route>
+    </Switch>
   );
 }
 
